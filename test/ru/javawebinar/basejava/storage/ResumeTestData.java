@@ -4,26 +4,16 @@ import ru.javawebinar.basejava.model.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ResumeTestData {
 
-    public static List<Contact> contacts;
-    static {
-        try {
-            contacts = List.of(
-                    new Contact(ContactType.PHONE, new Link("+7(921) 855-0482", null)),
-                    new Contact(ContactType.SKYPE, new Link("grigory.kislin", null)),
-                    new Contact(ContactType.EMAIL, new Link("gkislin@yandex.ru", null)),
-                    new Contact(ContactType.LINKEDIN, new Link(null, new URL("https://www.linkedin.com/authwall?trk=ripf&trkInfo=AQGstIVZlbY8RQAAAXdJ-j9oFcSfJZ0fprgUt27-rPTORYSicwsmrxFS11WVjELaQK1KQIQFEjvJoZbUiPO7t2diLculPZYnWTSYQaMu7aFfTYhZOi4FdXF1NEfRjMsUY_tIa78=&originalReferer=https://javawebinar.github.io/&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fgkislin"))),
-                    new Contact(ContactType.GITHUB, new Link(null, new URL("https://github.com/gkislin"))),
-                    new Contact(ContactType.STACKOVERFLOW, new Link(null, new URL("https://stackoverflow.com/users/548473/grigory-kislin"))),
-                    new Contact(ContactType.HOME_PAGE, new Link(null, new URL("http://gkislin.ru/")))
-            );
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }
+    public static List<Contact> contacts = List.of(
+            new Contact(ContactType.PHONE, new Link("+7(921) 855-0482", null)),
+            new Contact(ContactType.SKYPE, new Link("grigory.kislin", null)),
+            new Contact(ContactType.EMAIL, new Link("gkislin@yandex.ru", null))
+    );
 
     public static Section objective = new TextSection(SectionType.OBJECTIVE, "Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
 
@@ -96,10 +86,10 @@ public class ResumeTestData {
         try {
             experience = new OrganisationSection(SectionType.EXPERIENCE, List.of(
                     new Organisation(new Link("Java Online Projects", new URL("https://javaops.ru/")),
-                            "10/2013 - Сейчас", "Автор проекта.",
+                            LocalDate.of(2013, 10, 1), LocalDate.now(), "Автор проекта.",
                             "Создание, организация и проведение Java онлайн проектов и стажировок."),
                     new Organisation(new Link("Wrike", new URL("https://www.wrike.com/")),
-                            "10/2014 - 01/2016", "Старший разработчик (backend)",
+                            LocalDate.of(2014, 10, 1), LocalDate.of(2016, 1, 1), "Старший разработчик (backend)",
                             """
                                     Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, 
                                     MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, 
@@ -117,7 +107,7 @@ public class ResumeTestData {
         try {
             education = new OrganisationSection(SectionType.EDUCATION, List.of(
                     new Organisation(new Link("Coursera", new URL("https://www.coursera.org/learn/progfun1")),
-                            "03/2013 - 05/2013", "Functional Programming Principles in Scala\" by Martin Odersky",
+                            LocalDate.of(2013, 03, 1), LocalDate.of(2013, 03, 30), "Functional Programming Principles in Scala\" by Martin Odersky",
                             null)
             ));
         } catch (MalformedURLException e) {
