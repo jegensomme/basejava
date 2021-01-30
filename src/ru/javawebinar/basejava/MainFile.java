@@ -3,6 +3,8 @@ package ru.javawebinar.basejava;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * gkislin
@@ -32,6 +34,16 @@ public class MainFile {
             System.out.println(fis.read());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+        traverseDirectory(new File("."));
+    }
+
+    public static void traverseDirectory(File file) {
+        System.out.println(file.getName());
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            Arrays.stream(files).forEach(f -> traverseDirectory(f));
         }
     }
 }
