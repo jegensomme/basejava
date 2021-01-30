@@ -2,11 +2,12 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface Storage {
 
-    void clear();
+    void clear() throws IOException;
 
     void update(Resume r);
 
