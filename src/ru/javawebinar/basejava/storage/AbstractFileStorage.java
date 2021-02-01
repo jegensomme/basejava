@@ -55,7 +55,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             doWrite(r, file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("File write error", file.getName(), e);
         }
     }
 
@@ -76,13 +76,13 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     protected abstract void doWrite(Resume r, File file) throws IOException;
 
+    protected abstract Resume doRead(File file) throws IOException;
+
     @Override
     protected Resume doGet(File file) {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
-            return (Resume) in.readObject();
+        try {
+            return doRead(file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
-        } catch (ClassNotFoundException e) {
             throw new StorageException("File read error", file.getName(), e);
         }
     }
