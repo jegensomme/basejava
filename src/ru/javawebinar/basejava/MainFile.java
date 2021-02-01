@@ -39,11 +39,17 @@ public class MainFile {
         traverseDirectory(new File("."));
     }
 
-    public static void traverseDirectory(File file) {
-        System.out.println(file.getName());
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            Arrays.stream(files).forEach(f -> traverseDirectory(f));
+    public static void traverseDirectory(File dir) {
+        File[] files = dir.listFiles();
+        if (files == null) {
+            System.out.println("Directory read error");
+            return;
+        }
+        for (File file : files) {
+            System.out.println(file.getName());
+            if (file.isDirectory()) {
+                traverseDirectory(file);
+            }
         }
     }
 }
