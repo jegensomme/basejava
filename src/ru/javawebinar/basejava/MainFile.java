@@ -46,7 +46,7 @@ public class MainFile {
             return;
         }
         for (File file : files) {
-            System.out.println(file.getName());
+            System.out.println((file.isDirectory() ? "Directory: " : "File: ") + file.getName());
             if (file.isDirectory()) {
                 traverseDirectory(file);
             }
