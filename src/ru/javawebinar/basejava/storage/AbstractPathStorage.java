@@ -39,7 +39,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     public int size() {
         try {
-            return Files.lines(directory).collect(Collectors.toList()).size();
+            return Files.list(directory).collect(Collectors.toList()).size();
         } catch (IOException e) {
             throw new StorageException("Directory read error", null);
         }
