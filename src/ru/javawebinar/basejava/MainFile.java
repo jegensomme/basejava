@@ -3,6 +3,10 @@ package ru.javawebinar.basejava;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * gkislin
@@ -33,22 +37,29 @@ public class MainFile {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        printDirectoryDeeply(dir);
+        printDirectoryDeeply(dir.toPath());
     }
 
     // TODO: make pretty output
-    public static void printDirectoryDeeply(File dir) {
-        File[] files = dir.listFiles();
+    public static void printDirectoryDeeply(Path dir) {
+        printDirectoryDeeply(dir, "");
+    }
 
-        if (files != null) {
-            for (File file : files) {
-                if (file.isFile()) {
-                    System.out.println("File: " + file.getName());
-                } else if (file.isDirectory()) {
-                    System.out.println("Directory: " + file.getName());
-                    printDirectoryDeeply(file);
-                }
+    private static void printDirectoryDeeply(Path dir, String indent) {
+        if (Files.isDirectory(dir)) {
+            System.out.println(indent + "Directory: " + dir.toFile().getName());
+            List<Path> paths;
+            try {
+                paths = Files.list(dir).collect(Collectors.toList());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+            if (paths.size() == 0) {
+                return;
+            }
+            paths.forEach(path -> printDirectoryDeeply(path, indent + "    "));
+        } else {
+            System.out.println(indent + dir.toFile().getName());
         }
     }
 }
