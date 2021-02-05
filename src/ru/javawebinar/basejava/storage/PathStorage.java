@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PathStorage extends AbstractFileStorage<Path> {
     private Path directory;
@@ -26,20 +27,12 @@ public class PathStorage extends AbstractFileStorage<Path> {
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::doDelete);
-        } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
-        }
+        getList().forEach(this::doDelete);
     }
 
     @Override
     public int size() {
-        try {
-            return (int) Files.list(directory).count();
-        } catch (IOException e) {
-            throw new StorageException("Directory read error", null);
-        }
+        return (int) getList().count();
     }
 
     @Override
@@ -50,7 +43,7 @@ public class PathStorage extends AbstractFileStorage<Path> {
     @Override
     protected void doUpdate(Resume r, Path path) {
         try {
-            doWrite(r, new BufferedOutputStream(new FileOutputStream(path.toFile())));
+            doWrite(r, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path write error", r.getUuid(), e);
         }
@@ -74,7 +67,7 @@ public class PathStorage extends AbstractFileStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(path.toFile())));
+            return doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path read error", path.toFile().getName(), e);
         }
@@ -91,16 +84,17 @@ public class PathStorage extends AbstractFileStorage<Path> {
 
     @Override
     protected List<Resume> doCopyAll() {
-        List<Path> paths;
+        List<Path> paths = getList().collect(Collectors.toList());
+        List<Resume> list = new ArrayList<>(paths.size());
+        paths.forEach(path -> list.add(doGet(path)));
+        return list;
+    }
+
+    private Stream<Path> getList() {
         try {
-            paths = Files.list(directory).collect(Collectors.toList());
+            return Files.list(directory);
         } catch (IOException e) {
             throw new StorageException("Directory read error", null);
         }
-        List<Resume> list = new ArrayList<>(paths.size());
-        for (Path path : paths) {
-            list.add(doGet(path));
-        }
-        return list;
     }
 }
