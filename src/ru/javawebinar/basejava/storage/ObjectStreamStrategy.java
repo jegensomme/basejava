@@ -5,10 +5,7 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamFileStorage extends AbstractFileStorage {
-    protected ObjectStreamFileStorage(File directory) {
-        super(directory);
-    }
+public class ObjectStreamStrategy extends AbstractStreamStrategy {
 
     @Override
     protected void doWrite(Resume r, OutputStream os) throws IOException {

@@ -12,14 +12,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractFileStorage<Path> {
     private Path directory;
 
-    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
-
-    protected abstract Resume doRead(InputStream is) throws IOException;
-
-    protected AbstractPathStorage(String dir) {
+    protected PathStorage(String dir, AbstractStreamStrategy streamStrategy) {
+        super(streamStrategy);
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
@@ -39,7 +36,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     public int size() {
         try {
-            return Files.list(directory).collect(Collectors.toList()).size();
+            return (int) Files.list(directory).count();
         } catch (IOException e) {
             throw new StorageException("Directory read error", null);
         }
