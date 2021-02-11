@@ -15,7 +15,7 @@ public class SqlStorage implements Storage {
     public final ObjectMapper<Resume> resumeMapper = rs -> {
         List<Resume> list = new ArrayList<>();
         while (rs.next()) {
-            list.add(new Resume(rs.getString("uuid").trim(), rs.getString("full_name")));
+            list.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
         }
         return list;
     };
