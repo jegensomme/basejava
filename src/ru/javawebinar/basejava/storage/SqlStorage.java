@@ -2,6 +2,7 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.sql.ObjectMapper;
 import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.*;
@@ -11,7 +12,7 @@ import java.util.List;
 public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
 
-    public final SqlHelper.ObjectMapper<Resume> resumeMapper = rs -> {
+    public final ObjectMapper<Resume> resumeMapper = rs -> {
         List<Resume> list = new ArrayList<>();
         while (rs.next()) {
             list.add(new Resume(rs.getString("uuid").trim(), rs.getString("full_name")));
@@ -58,14 +59,12 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.executeQuery("SELECT * FROM resume r ORDER BY r.uuid, r.full_name", resumeMapper);
+        return sqlHelper.executeQuery("SELECT * FROM resume r ORDER BY r.full_name, r.uuid", resumeMapper);
     }
 
     @Override
     public int size() {
-        return sqlHelper.executeQuery("SELECT count(*) FROM resume", rs -> {
-            rs.next();
-            return List.of(rs.getInt(1));
-        }).get(0);
+        return sqlHelper.executeQuery("SELECT count(*) FROM resume",
+                rs -> List.of(rs.next() ? rs.getInt(1) : 0)).get(0);
     }
 }

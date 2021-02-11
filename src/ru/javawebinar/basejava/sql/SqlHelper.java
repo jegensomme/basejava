@@ -43,11 +43,6 @@ public class SqlHelper {
     }
 
     @FunctionalInterface
-    public interface ObjectMapper<T> {
-        List<T> get(ResultSet resultSet) throws SQLException;
-    }
-
-    @FunctionalInterface
     private interface StatementExecutor<R> {
         R execute(PreparedStatement ps) throws SQLException;
     }
