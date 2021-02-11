@@ -92,7 +92,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() throws Exception {
-        storage.get("dummy");
+        storage.update(new Resume("dummy", "Not exist"));
     }
 
     @Test

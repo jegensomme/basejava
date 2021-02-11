@@ -11,3 +11,5 @@ CREATE TABLE contact (
 );
 CREATE UNIQUE INDEX contact_uuid_type_index
   ON contact (resume_uuid, type);
+
+UPDATE resume r SET full_name=? WHERE r.uuid=?
