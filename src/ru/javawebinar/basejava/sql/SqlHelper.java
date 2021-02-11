@@ -1,7 +1,5 @@
 package ru.javawebinar.basejava.sql;
 
-import ru.javawebinar.basejava.exception.StorageException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,34 +14,25 @@ public class SqlHelper {
         this.connectionFactory = connectionFactory;
     }
 
-    private <R> R processConnection(String sql, StatementProcessor<R> statementProcessor, Object... params) throws SQLException {
+    private <R> R processConnection(String sql, StatementExecutor<R> statementProcessor, Object... params) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             setParams(ps, params);
-            return statementProcessor.process(ps);
-        }
-    }
-
-    public int count() {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT count(*) FROM resume")) {
-            ResultSet resultSet = ps.executeQuery();
-            resultSet.next();
-            return resultSet.getInt(1);
+            return statementProcessor.execute(ps);
         } catch (SQLException e) {
-            throw new StorageException(e);
+            throw ExceptionUtil.convertException(e);
         }
     }
 
-    public boolean execute(String sql, Object... params) throws SQLException {
+    public boolean execute(String sql, Object... params) {
         return processConnection(sql, PreparedStatement::execute, params);
     }
 
-    public int executeUpdate(String sql, Object... params) throws SQLException {
+    public int executeUpdate(String sql, Object... params) {
         return processConnection(sql, PreparedStatement::executeUpdate, params);
     }
 
-    public <T> List<T> executeQuery(String sql, ObjectMapper<T> objectMapper, Object... params) throws SQLException {
+    public <T> List<T> executeQuery(String sql, ObjectMapper<T> objectMapper, Object... params) {
         return processConnection(sql, ps -> objectMapper.get(ps.executeQuery()), params);
     }
 
@@ -59,7 +48,7 @@ public class SqlHelper {
     }
 
     @FunctionalInterface
-    private interface StatementProcessor<R> {
-        R process(PreparedStatement ps) throws SQLException;
+    private interface StatementExecutor<R> {
+        R execute(PreparedStatement ps) throws SQLException;
     }
 }
