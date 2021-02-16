@@ -16,10 +16,6 @@ public class SqlHelper {
         this.connectionFactory = connectionFactory;
     }
 
-    public void execute(String sql, Object... params) {
-        execute(sql, PreparedStatement::execute);
-    }
-
     public void executeBatch(Connection conn, String sql, List<List<Object>> paramsBatchList) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (List<Object> paramsBatch : paramsBatchList) {
@@ -27,6 +23,17 @@ public class SqlHelper {
                 ps.addBatch();
             }
             ps.executeBatch();
+        }
+    }
+
+    public void execute(String sql, Object... params) {
+        execute(sql, PreparedStatement::execute);
+    }
+
+    public <T> T execute(Connection conn, String sql, SqlExecutor<T> executor, Object... params) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setParams(ps, params);
+            return executor.execute(ps);
         }
     }
 
