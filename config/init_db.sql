@@ -1,3 +1,8 @@
+DROP TABLE IF EXISTS resume;
+DROP TABLE IF EXISTS contact;
+DROP TABLE IF EXISTS section;
+
+
 CREATE TABLE resume (
   uuid      CHAR(36) PRIMARY KEY NOT NULL,
   full_name TEXT                 NOT NULL
