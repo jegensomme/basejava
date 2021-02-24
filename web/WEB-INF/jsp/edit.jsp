@@ -31,9 +31,13 @@
             <jsp:useBean id="type" type="ru.javawebinar.basejava.model.SectionType"/>
             <h3>${type.title}:</h3>
             <c:choose>
-                <c:when test="${type == SectionType.PERSONAL || type == SectionType.OBJECTIVE}">
+                <c:when test="${type == SectionType.OBJECTIVE}">
                     <%pageContext.setAttribute("textSection", ((TextSection)resume.getSection(type)));%>
                     <input type="text" size="60" name="${type.name()}" value="${textSection == null ? null : textSection.content}">
+                </c:when>
+                <c:when test="${type == SectionType.PERSONAL}">
+                    <%pageContext.setAttribute("textSection", ((TextSection)resume.getSection(type)));%>
+                    <textarea cols="75" rows="5" name="${type.name()}">${textSection == null ? null : textSection.content}</textarea>
                 </c:when>
                 <c:when test="${type == SectionType.ACHIEVEMENT || type == SectionType.QUALIFICATIONS}">
                     <%pageContext.setAttribute("listSection", ((ListSection)resume.getSection(type)));%>
@@ -86,7 +90,7 @@
                                                     </dl>
                                                     <dl>
                                                         <dt>Описание:</dt>
-                                                        <dd><input type="text" name="${posId}.description" size=50 value="${position.description}"></dd>
+                                                        <dd><textarea name="${posId}.description" cols="75" rows="5">${position.description}</textarea></dd>
                                                     </dl>
                                                     <button type="button" onclick="deletePosition('${posTrId}')">Удалить</button>
                                                 </td>

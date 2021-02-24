@@ -12,6 +12,7 @@ import java.util.UUID;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Comparable<Resume>, Serializable {
+    public static final Resume EMPTY = new Resume();
     private static final long serialVersionUID = 1L;
 
     // Unique identifier

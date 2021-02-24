@@ -4,6 +4,7 @@ import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.Storage;
 import ru.javawebinar.basejava.util.DateUtil;
+import ru.javawebinar.basejava.util.HtmlUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -35,38 +36,31 @@ public class ResumeServlet extends HttpServlet {
         r.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            if (value != null && value.trim().length() != 0) {
-                r.addContact(type, value);
-            } else {
+            if (HtmlUtil.isEmpty(value)) {
                 r.getContacts().remove(type);
+            } else {
+                r.addContact(type, value);
             }
         }
         for (SectionType type : SectionType.values()) {
-            switch (type) {
-                case PERSONAL:
-                case OBJECTIVE:
-                    String value = request.getParameter(type.name());
-                    if (value != null && value.trim().length() != 0) {
+            String value = request.getParameter(type.name());
+            String[] values = request.getParameterValues(type.name());
+            if (HtmlUtil.isEmpty(value) && values.length < 2) {
+                r.getSections().remove(type);
+            } else {
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
                         r.addSection(type, new TextSection(value));
-                    } else {
-                        r.getSections().remove(type);
-                    }
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    String[] items = request.getParameterValues(type.name());
-                    if (items != null) {
-                        r.addSection(type, new ListSection(items));
-                    } else {
-                        r.getSections().remove(type);
-                    }
-                    break;
-                case EXPERIENCE:
-                case EDUCATION:
-                    String[] orgIds = request.getParameterValues(type.name());
-                    if (orgIds != null) {
-                        List<Organization> organizations = new ArrayList<>(orgIds.length);
-                        for (String orgId : orgIds) {
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        r.addSection(type, new ListSection(values));
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        List<Organization> organizations = new ArrayList<>(values.length);
+                        for (String orgId : values) {
                             String name = request.getParameter(orgId + ".name");
                             String url = request.getParameter(orgId + ".url");
                             String[] posIds = request.getParameterValues(orgId + ".position");
@@ -85,9 +79,7 @@ public class ResumeServlet extends HttpServlet {
                             organizations.add(new Organization(new Link(name, url), positions != null ? positions : new ArrayList<>()));
                         }
                         r.addSection(type, new OrganizationSection(organizations));
-                    } else {
-                        r.getSections().remove(type);
-                    }
+                }
             }
         }
         if (r.isNew()) {
@@ -118,7 +110,7 @@ public class ResumeServlet extends HttpServlet {
                 r = storage.get(uuid);
                 break;
             case "add":
-                r = new Resume();
+                r = Resume.EMPTY;
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");

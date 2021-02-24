@@ -27,40 +27,42 @@
     <hr/>
     <table cellpadding="2">
         <c:forEach var="sectionEntry" items="${resume.sections}">
-            <jsp:useBean id="sectionEntry" type="java.util.Map.Entry<ru.javawebinar.basejava.model.SectionType, ru.javawebinar.basejava.model.Section>"/>
+            <c:set var="key" value="${sectionEntry.key}"/>
+            <c:set var="section" value="${sectionEntry.value}"/>
+            <jsp:useBean id="section" type="ru.javawebinar.basejava.model.Section"/>
             <tr>
                 <td colspan="2">
-                    <h2><a name="type.name">${sectionEntry.key.title}</a></h2>
+                    <h2><a name="type.name">${key.title}</a></h2>
                 </td>
             </tr>
             <c:choose>
-                <c:when test="${sectionEntry.key == SectionType.PERSONAL}">
+                <c:when test="${key == SectionType.PERSONAL}">
                     <tr>
                         <td colspan="2">
-                            <h3><%=((TextSection)sectionEntry.getValue()).getContent()%></h3>
+                            <h3><%=((TextSection)section).getContent()%></h3>
                         </td>
                     </tr>
                 </c:when>
-                <c:when test="${sectionEntry.key == SectionType.OBJECTIVE}">
+                <c:when test="${key == SectionType.OBJECTIVE}">
                     <tr>
                         <td colspan="2">
-                            <%=((TextSection)sectionEntry.getValue()).getContent()%>
+                            <%=((TextSection)section).getContent()%>
                         </td>
                     </tr>
                 </c:when>
-                <c:when test="${sectionEntry.key == SectionType.ACHIEVEMENT || sectionEntry.key == SectionType.QUALIFICATIONS}">
+                <c:when test="${key == SectionType.ACHIEVEMENT || key == SectionType.QUALIFICATIONS}">
                     <tr>
                         <td colspan="2">
                             <ul>
-                                <c:forEach var="item" items="<%=((ListSection)sectionEntry.getValue()).getItems()%>">
+                                <c:forEach var="item" items="<%=((ListSection)section).getItems()%>">
                                     <li>${item}</li>
                                 </c:forEach>
                             </ul>
                         </td>
                     </tr>
                 </c:when>
-                <c:when test="${sectionEntry.key == SectionType.EXPERIENCE || sectionEntry.key == SectionType.EDUCATION}">
-                    <c:forEach var="organisation" items="<%=((OrganizationSection)sectionEntry.getValue()).getOrganizations()%>">
+                <c:when test="${key == SectionType.EXPERIENCE || key == SectionType.EDUCATION}">
+                    <c:forEach var="organisation" items="<%=((OrganizationSection)section).getOrganizations()%>">
                         <tr>
                             <td colspan="2">
                                 <h3>

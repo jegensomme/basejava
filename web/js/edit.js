@@ -29,10 +29,11 @@ function addPosition(orgId) {
     td.setAttribute("colspan", "2")
     const position = document.createElement("b")
     position.appendChild(document.createTextNode("Позиция:"))
-    const positionDl = createDl(position, posId + ".title", "text", true)
-    const startDateDl = createDl(document.createTextNode("Начало:"), posId + ".startDate", "date", true)
-    const endDateDl = createDl(document.createTextNode("Окончание:"), posId + ".endDate", "date")
-    const descriptionDl = createDl(document.createTextNode("Описание:"), posId + ".description")
+    const positionDl = createDl(position, createInput("text", posId + ".title", 30, true))
+    const startDateDl = createDl(document.createTextNode("Начало:"), createInput("date", posId + ".startDate", 30, true))
+    const endDateDl = createDl(document.createTextNode("Окончание:"), createInput("date", posId + ".endDate", 30, false))
+    const descriptionTextArea = createTextArea(posId + ".description", 75, 5)
+    const descriptionDl = createDl(document.createTextNode("Описание:"), descriptionTextArea)
     const button = createButton("Удалить", "deletePosition", posIdItem)
     td.appendChild(positionDl)
     td.appendChild(startDateDl)
@@ -51,12 +52,12 @@ function addOrganisation(typeName) {
     orgSection.setAttribute("id", orgId)
     const nameB = document.createElement("b")
     nameB.appendChild(document.createTextNode("Название:"))
-    const nameDl = createDl(nameB, orgId + ".name", "text", true)
+    const nameDl = createDl(nameB, (document.createTextNode("text"), orgId + ".name", 30, true))
     const idInput = document.createElement("input")
     idInput.setAttribute("type", "hidden")
     idInput.setAttribute("name", typeName)
     idInput.setAttribute("value", orgId)
-    const urlDl = createDl(document.createTextNode("Ссылка:"), orgId + ".url", "text")
+    const urlDl = createDl(document.createTextNode("Ссылка:"), createInput("text", orgId + ".url", 30, false))
     const table = document.createElement("table")
     table.setAttribute("id", orgId + ".posTable")
     table.setAttribute("cellpadding", "10")
@@ -88,19 +89,12 @@ function deleteOrganisation(orgId) {
     section.parentElement.removeChild(section)
 }
 
-function createDl(text, name, type, required) {
+function createDl(text, ddChild) {
     const dl = document.createElement("dl")
     const dt = document.createElement("dt")
     dt.appendChild(text)
     const dd = document.createElement("dd")
-    const input = document.createElement("input")
-    input.setAttribute("type", type)
-    input.setAttribute("name", name)
-    input.setAttribute("size", "60")
-    if (required) {
-        input.setAttribute("required", "")
-    }
-    dd.appendChild(input)
+    dd.appendChild(ddChild)
     dl.appendChild(dt)
     dl.appendChild(dd)
     return dl
@@ -112,6 +106,25 @@ function createButton(text, funcName, args) {
     button.setAttribute("onclick", funcName +"('" + args + "')")
     button.appendChild(document.createTextNode(text))
     return button
+}
+
+function createTextArea(name, cols, rows) {
+    const textArea = document.createElement("textArea")
+    textArea.setAttribute("name", name)
+    textArea.setAttribute("cols", cols)
+    textArea.setAttribute("rows", rows)
+    return textArea
+}
+
+function createInput(type, name, size, required) {
+    const input = document.createElement("input")
+    input.setAttribute("type", type)
+    input.setAttribute("name", name)
+    input.setAttribute("size", size)
+    if (required) {
+        input.setAttribute("required", "")
+    }
+    return input
 }
 
 function uuidv4() {
