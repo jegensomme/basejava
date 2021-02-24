@@ -1,18 +1,15 @@
 function addItem(typeName) {
-    const ul = document.getElementById(typeName)
+    const table = document.getElementById(typeName)
     const itemId = uuidv4()
-    const li = document.createElement("li")
-    li.setAttribute("id", itemId)
-    const input = document.createElement('input')
-    input.setAttribute("type", "text")
-    input.setAttribute("name", typeName)
-    input.setAttribute("size", "60")
-    input.setAttribute("required", "")
-    const button = createButton("Удалить", "deleteItem", itemId)
-    button.setAttribute("style", "margin: 2px")
-    li.appendChild(input)
-    li.appendChild(button)
-    ul.appendChild(li)
+    const tr = document.createElement("tr")
+    tr.setAttribute("id", itemId)
+    const textAreaTd = document.createElement("td")
+    textAreaTd.appendChild(createTextArea(typeName, "75", "3"))
+    const buttonTd = document.createElement("td")
+    buttonTd.appendChild(createButton("Удалить", "deleteItem", itemId))
+    tr.appendChild(textAreaTd)
+    tr.appendChild(buttonTd)
+    table.appendChild(tr)
 }
 
 function addPosition(orgId) {

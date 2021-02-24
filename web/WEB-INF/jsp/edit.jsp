@@ -41,14 +41,21 @@
                 </c:when>
                 <c:when test="${type == SectionType.ACHIEVEMENT || type == SectionType.QUALIFICATIONS}">
                     <%pageContext.setAttribute("listSection", ((ListSection)resume.getSection(type)));%>
-                    <ul id="${type.name()}">
+                    <table cellpadding="5" id="${type.name()}">
                         <c:if test="${listSection != null}">
                             <c:forEach var="item" items="${listSection.items}">
                                 <c:set var="itemId" value="${UUID.randomUUID().toString()}"/>
-                                <li id="${itemId}"><input type="text" name="${type.name()}" size="60" value="${item}" required><button style="margin: 2px" type="button" onclick="deleteItem('${itemId}')">Удалить</button></li>
+                                <tr id="${itemId}">
+                                    <td >
+                                        <textarea cols="75" rows="3" name="${type.name()}">${item}</textarea>
+                                    </td>
+                                    <td>
+                                        <button type="button" onclick="deleteItem('${itemId}')">Удалить</button>
+                                    </td>
+                                </tr>
                             </c:forEach>
                         </c:if>
-                    </ul>
+                    </table>
                     <button type="button" onclick="addItem('${type.name()}')">Добавить</button>
                 </c:when>
                 <c:when test="${type == SectionType.EXPERIENCE || type == SectionType.EDUCATION}">
